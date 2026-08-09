@@ -1,0 +1,19 @@
+{
+  "name": "the-cop-agentic-ops",
+  "version": "1.0.0",
+  "description": "Agentic Demand Planning & Replenishment Copilot with Human-in-the-Loop Trust & Control Layer",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "agentic-ops",
+    "demand-planning",
+    "inventory-replenishment",
+    "human-in-the-loop",
+    "supply-chain-ai"
+  ],
+  "author": "Antigravity Agent",
+  "license": "MIT"
+}

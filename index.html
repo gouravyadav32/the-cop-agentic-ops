@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Cop - Agentic Ops Demand Planning & Replenishment System</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Autonomous Agentic Ops demand planning system with dynamic safety stock math, edge case scenario injector, and Human-in-the-Loop Trust & Control Layer." />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#EEF2FF',
+              500: '#6366F1',
+              600: '#4F46E5',
+              900: '#1E1B4B'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts (Inter + JetBrains Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-[#0B0F17] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- TOP NAVBAR -->
+  <header class="sticky top-0 z-40 bg-[#0B0F17]/80 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Brand Logo & Title -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-base shadow-lg shadow-indigo-600/30 ring-1 ring-white/20">
+            <i data-lucide="bot" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-lg text-white tracking-wider font-mono">THE COP</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">AGENTIC OPS v1.0</span>
+            </div>
+            <p class="text-[11px] text-slate-400 -mt-0.5">Autonomous Replenishment & Trust Layer</p>
+          </div>
+        </div>
+
+        <!-- System Controls & Live Telemetry -->
+        <div class="flex items-center gap-4">
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-slate-300 font-medium">Sensor Stream Active</span>
+          </div>
+
+          <button id="btn-run-scan-header" class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-indigo-300 border border-slate-800 text-xs font-semibold flex items-center gap-1.5 transition">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Run Scan
+          </button>
+        </div>
+
+      </div>
+
+      <!-- NAVIGATION TABS -->
+      <nav class="flex items-center gap-1.5 overflow-x-auto pb-3 pt-1 no-scrollbar border-t border-slate-800/40">
+        <button data-tab="workflow" class="nav-tab-item px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shrink-0 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
+          <i data-lucide="git-compare" class="w-3.5 h-3.5"></i> Reimagined Workflow
+        </button>
+
+        <button data-tab="dashboard" class="nav-tab-item px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition flex items-center gap-1.5 shrink-0">
+          <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i> Dashboard Overview
+        </button>
+
+        <button data-tab="trust" class="nav-tab-item px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition flex items-center gap-1.5 shrink-0 relative">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Trust & Control
+          <span id="escalations-badge-count" class="hidden px-1.5 py-0.2 text-[10px] font-mono font-bold bg-rose-500 text-white rounded-full">0</span>
+        </button>
+
+        <button data-tab="trace" class="nav-tab-item px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition flex items-center gap-1.5 shrink-0">
+          <i data-lucide="network" class="w-3.5 h-3.5"></i> Execution Trace
+        </button>
+
+        <button data-tab="skus" class="nav-tab-item px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition flex items-center gap-1.5 shrink-0">
+          <i data-lucide="boxes" class="w-3.5 h-3.5"></i> SKU Master Table
+        </button>
+
+        <button data-tab="scenarios" class="nav-tab-item px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition flex items-center gap-1.5 shrink-0">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i> Edge Case Injector
+        </button>
+
+        <button data-tab="limitations" class="nav-tab-item px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition flex items-center gap-1.5 shrink-0">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Honest Limitations
+        </button>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div id="app-content-container">
+      <!-- Dynamic Views Rendered Here -->
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#0B0F17] border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div>
+        <strong class="text-slate-400 font-mono">The Agentic Ops Build</strong> — Case 02 Retail Replenishment Copilot
+      </div>
+      <div class="flex items-center gap-4 text-slate-400">
+        <span>Built with Sense → Decide → Draft → Escalate Protocol</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic Modules -->
+  <script src="js/data.js"></script>
+  <script src="js/agentEngine.js"></script>
+  <script src="js/components/workflowView.js"></script>
+  <script src="js/components/dashboardView.js"></script>
+  <script src="js/components/trustControlView.js"></script>
+  <script src="js/components/agentTraceView.js"></script>
+  <script src="js/components/skuExplorerView.js"></script>
+  <script src="js/components/scenarioInjector.js"></script>
+  <script src="js/components/limitationsView.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
